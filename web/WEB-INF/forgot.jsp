@@ -20,5 +20,6 @@
             <br />
             <input type="submit" name="submit" value="Submit" />
         </form>
+        <div>${msg}</div>
     </body>
 </html>

@@ -9,6 +9,8 @@ import dataaccess.UserDB;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
+import javax.naming.NamingException;
 import models.User;
 import sun.util.logging.PlatformLogger;
 
@@ -48,5 +50,35 @@ public class AccountService {
         }
 
         return null;
+    }
+    
+    public boolean forgotPassword(String email) {
+        boolean success = false;
+        UserService us = new UserService();
+        User getUserByEmail = us.getByEmail(email);
+        
+        // Use String Builder to buld message
+        StringBuilder buildMsg = new StringBuilder();
+        buildMsg.append("Hi ").append(getUserByEmail.getFirstname()).append(" ").append(getUserByEmail.getLastname()).append(", ");
+        buildMsg.append(System.lineSeparator());
+        buildMsg.append("Here are your credentials to log back into Notes Keeper.");
+        buildMsg.append(System.lineSeparator());
+        buildMsg.append("User name: ").append(getUserByEmail.getUsername());
+        buildMsg.append(System.lineSeparator());
+        buildMsg.append("Password: ").append(getUserByEmail.getPassword());
+        
+        // Get Message
+        String msg = buildMsg.toString();
+        
+        try {
+            GmailService.sendMail(getUserByEmail.getEmail(), "Forgot Password", msg, false);
+            success = true;
+        } catch (MessagingException ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return success;
     }
 }
