@@ -16,7 +16,9 @@
         <form method="post" action="login">
             username: <input type="text" required name="username"><br>
             password: <input type="password" required name="password"><br>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" />
+            <br />
+            <a href="/Week9Demo/forgot">Forgot password</a>
         </form>
     </body>
 </html>

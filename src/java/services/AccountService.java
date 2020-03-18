@@ -5,7 +5,7 @@
  */
 package services;
 
-import database.UserDB;
+import dataaccess.UserDB;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
