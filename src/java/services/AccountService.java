@@ -7,6 +7,7 @@ package services;
 
 import dataaccess.UserDB;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.MessagingException;
@@ -79,6 +80,54 @@ public class AccountService {
             Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        return success;
+    }
+    
+    public boolean resetPassword(String email, String path, String url) {
+        boolean success = false;
+        UserService us = new UserService();
+        UserDB ud = new UserDB();
+        User getUserByEmail = us.getByEmail(email);
+        
+        String uuid = UUID.randomUUID().toString();
+        String to = getUserByEmail.getEmail();
+        String subject = "Reset Password";
+        String template = path + "/emailtemplates/resetpassword.html";
+        String link = url + "?uuid=" + uuid;
+        
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("firstname", getUserByEmail.getFirstname());
+        tags.put("lastname", getUserByEmail.getLastname());
+        tags.put("username", getUserByEmail.getUsername());
+        tags.put("link", link);
+        
+        try {
+            getUserByEmail.setResetPasswordUUID(uuid);
+            ud.update(getUserByEmail);
+            GmailService.sendMail(email, subject, template, tags);
+            success = true;
+        } catch(Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);            
+        }
+        
+        return success;
+    }
+    
+    public boolean changePassword(String uuid, String password) {
+        boolean success = false;
+        
+        UserService us = new UserService();
+        try {
+            User user = us.getByUUID(uuid);
+            user.setPassword(password);
+            user.setResetPasswordUUID(null);
+            UserDB ur = new UserDB();
+            ur.update(user);
+            success = true;
+        } catch (Exception ex) {
+            System.out.println(ex.toString());          
+        }
+            
         return success;
     }
 }

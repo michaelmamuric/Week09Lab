@@ -19,6 +19,8 @@
             <input type="submit" value="Submit" />
             <br />
             <a href="/Week9Demo/forgot">Forgot password</a>
+            <br />
+            <a href="/Week9Demo/reset">Reset password</a>
         </form>
     </body>
 </html>

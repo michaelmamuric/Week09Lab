@@ -81,6 +81,16 @@ public class UserDB {
             em.close();
         }
     }
+    
+    public User getUserByUUID(String uuid) {
+        EntityManager em = DBUtil.getEmFactory().createEntityManager();
+        try {
+            User user = (User) em.createNamedQuery("User.findByResetPasswordUUID").setParameter("resetPasswordUUID", uuid).getSingleResult();
+            return user;
+        } finally {
+            em.close();
+        }
+    }    
 
     public int delete(User user) throws NotesDBException {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
